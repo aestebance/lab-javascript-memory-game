@@ -26,6 +26,7 @@ const cards = [
 ];
 
 const memoryGame = new MemoryGame(cards);
+memoryGame.shuffleCards();
 
 window.addEventListener('load', event => {
   let html = '';
@@ -42,8 +43,30 @@ window.addEventListener('load', event => {
   // Bind the click event of each element to a function
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', () => {
-      // TODO: write some code here
-      console.log(`Card clicked: ${card}`);
+      document.getElementById("pairs-clicked").innerHTML = memoryGame.pairsClicked;
+      document.getElementById("pairs-guessed").innerHTML = memoryGame.pairsGuessed;
+      if (memoryGame.pickedCards.length == 0) {
+        memoryGame.pickedCards.push(card);
+        card.classList.add("turned");
+      }
+      else {
+        if (memoryGame.pickedCards.length == 1) {
+          memoryGame.pickedCards.push(card);
+          card.classList.add("turned");
+          setTimeout(() => {
+
+            if (!memoryGame.checkIfPair(memoryGame.pickedCards[0].getAttribute("data-card-name"), memoryGame.pickedCards[1].getAttribute("data-card-name"))) {
+              memoryGame.pickedCards.forEach(value => value.classList.remove("turned"));
+            }
+            memoryGame.pickedCards = [];
+            document.getElementById("pairs-clicked").innerHTML = memoryGame.pairsClicked;
+            document.getElementById("pairs-guessed").innerHTML = memoryGame.pairsGuessed;
+            if (memoryGame.isFinished()) {
+              alert("¡Enhorabuena has conseguido resolverlo");
+            }
+          }, 1300);
+        }
+      }
     });
   });
 });
